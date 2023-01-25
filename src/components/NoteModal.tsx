@@ -30,13 +30,10 @@ const NoteModal = ({
 
 
   useEffect(() => {
-    /* potentially a bit of an anti pattern - initiaaly setting, then updating state of props, 
-    but not unheard of, e.g. Formik's `enableReinitialize props allows you to do this */
     if (initialValues.body) {
       setBodyText(initialValues.body);
       setTitle(initialValues.title);
     }
-   // setPublished(initialValues.status === NoteStatus.PUBLISHED);
   }, [initialValues]);
 
   const handleSaveClick = async () => {
