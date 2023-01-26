@@ -1,6 +1,6 @@
 import React from 'react';
 import { Note } from '../types';
-const { List, Button, Typography, Avatar, Icon } = require('antd');
+const { List, Typography, Avatar, Icon } = require('antd');
 
 interface IProps {
   notes: Note[];

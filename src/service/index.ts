@@ -1,3 +1,4 @@
+// @ts-ignore
 import axios from 'axios';
 import { NotesResponse, NoteResponse, NotePostRequest, NotePatchRequest } from '../types';
 class NoteService {
