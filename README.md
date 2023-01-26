@@ -2,9 +2,9 @@
 
 In the project directory, we have the backend code inside ./backend folder.
 
-1. `run yarn && cd ./backend && yarn` from the project root directory to install node_modules
-2. `run yarn serve` from the project root directory or in ./backend directory to start the api.
-3. `run yarn start` from the project root directory to start the forntEnd application
+1. yarn `yarn && cd ./backend && yarn` from the project root directory to install node_modules
+2. run `yarn serve` from the project root directory or in ./backend directory to start the api.
+3. run `yarn start` from the project root directory to start the forntEnd application
 
 ## `side note :`
 
