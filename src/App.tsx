@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+// @ts-ignore
 import {PageHeader, Button, Switch, Pagination, Dropdown, Menu } from 'antd';
 import styled from 'styled-components';
 import NotesList from './components/NotesList';

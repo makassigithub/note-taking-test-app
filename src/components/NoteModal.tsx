@@ -1,4 +1,5 @@
 import React, { useState, EventHandler, ChangeEvent, useEffect } from 'react';
+// @ts-ignore
 import { Modal, Input } from 'antd';
 import { Note } from '../types';
 import styled from 'styled-components';

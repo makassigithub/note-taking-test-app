@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore
 import { List, Button, Typography, Avatar } from 'antd';
 import { Note } from '../types';
 
@@ -38,8 +39,8 @@ class NotesList extends React.PureComponent<IProps> {
         locale={this.locale}
         itemLayout="horizontal"
         dataSource={notes}
-        rowKey={note => note.id!}
-        renderItem={(note,index) =>
+        rowKey={(note:Note) => note.id!}
+        renderItem={(note:Note,index:number) =>
           index >= pageConfig.minIndex &&
           index <  pageConfig.maxIndex  ? (
           <List.Item
