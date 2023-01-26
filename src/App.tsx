@@ -17,6 +17,8 @@ const App = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [encryptionKey, setEncryptionKey] = useState('');
 
+  const minPageSize = 5;
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -125,7 +127,7 @@ const App = () => {
         subTitle={`(${notes.length})`}
         extra={
           <STopPanel>
-            {notes.length >= 5 && (
+            {notes.length > minPageSize && (
               <SDropdown overlay={pageSizeOptions} placement='bottomCenter'>
                 <Button>Page Size</Button>
               </SDropdown>
@@ -167,7 +169,7 @@ const App = () => {
           initialValues={editModalNote ? editModalNote : EMPTY_NOTE_VALUES}
         />
       </SListDiv>
-      {notes.length >= 5 && (
+      {notes.length > minPageSize && (
         <Pagination
           pageSize={pageConfig.pageSize}
           current={pageConfig.current}
