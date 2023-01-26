@@ -1,6 +1,6 @@
 import React from 'react';
 import { Note } from '../types';
-const { List, Button, Typography, Avatar } = require('antd');
+const { List, Button, Typography, Avatar, Icon } = require('antd');
 
 interface IProps {
   notes: Note[];
@@ -12,24 +12,16 @@ interface IProps {
 }
 
 class NotesList extends React.PureComponent<IProps> {
-  locale = {
-    emptyText: (
-      <>
-        <Typography.Paragraph>You don't have any notes yet</Typography.Paragraph>
-        <Button type='primary' onClick={this.props.onAddClick}>
-          Add your first note
-        </Button>
-      </>
-    ),
-  };
-
   render() {
     const { notes, isLoading, onEditItemClick, onDeleteItemClick, pageConfig } = this.props;
 
     return (
       <List
+        style={{ padding: '5px' }}
         loading={isLoading}
-        locale={this.locale}
+        locale={{
+          emptyText: <Typography.Paragraph>You don't have any notes yet</Typography.Paragraph>,
+        }}
         itemLayout='horizontal'
         dataSource={notes}
         rowKey={(note: Note) => note.id!}
@@ -38,10 +30,10 @@ class NotesList extends React.PureComponent<IProps> {
             <List.Item
               actions={[
                 <a key={note.id} onClick={() => onEditItemClick(note.id!)}>
-                  edit
+                  <Icon type='edit' style={{ fontSize: '20px' }} />
                 </a>,
                 <a key={note.id} onClick={() => onDeleteItemClick(note.id!)}>
-                  delete
+                  <Icon type='delete' style={{ fontSize: '18px' }} />
                 </a>,
               ]}
             >

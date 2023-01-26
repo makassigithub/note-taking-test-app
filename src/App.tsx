@@ -9,6 +9,8 @@ import { encryptNote, decryptNote } from './utils';
 
 const { PageHeader, Button, Switch, Pagination, Dropdown, Menu } = require('antd');
 const EMPTY_NOTE_VALUES: FormValues = { body: '', title: '' };
+const MIN_PAGE_SIZE = 5;
+const SORTABLE_LIST_SIZE = 2;
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +18,6 @@ const App = () => {
   const [editModalNoteId, setEditModalNoteId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [encryptionKey, setEncryptionKey] = useState('');
-
-  const minPageSize = 5;
 
   useEffect(() => {
     (async () => {
@@ -47,7 +47,9 @@ const App = () => {
         <Button onClick={() => setPageConfig({ ...pageConfig, pageSize: 10 })}>10 notes</Button>
       </Menu.Item>
       <Menu.Item>
-        <Button onClick={() => setPageConfig({ ...pageConfig, pageSize: 5 })}>5 notes</Button>
+        <Button onClick={() => setPageConfig({ ...pageConfig, pageSize: MIN_PAGE_SIZE })}>
+          5 notes
+        </Button>
       </Menu.Item>
     </Menu>
   );
@@ -127,16 +129,18 @@ const App = () => {
         subTitle={`(${notes.length})`}
         extra={
           <STopPanel>
-            {notes.length > minPageSize && (
+            {notes.length > MIN_PAGE_SIZE && (
               <SDropdown overlay={pageSizeOptions} placement='bottomCenter'>
                 <Button>Page Size</Button>
               </SDropdown>
             )}
-            <SSwitch
-              checkedChildren='Sort by creation'
-              unCheckedChildren='Sort by title'
-              onChange={onSortNoteByTitle}
-            />
+            {notes.length >= SORTABLE_LIST_SIZE && (
+              <SSwitch
+                checkedChildren='Sort by creation'
+                unCheckedChildren='Sort by title'
+                onChange={onSortNoteByTitle}
+              />
+            )}
             <Button type='primary' onClick={handleAddNoteClick}>
               Add Note
             </Button>
@@ -169,7 +173,7 @@ const App = () => {
           initialValues={editModalNote ? editModalNote : EMPTY_NOTE_VALUES}
         />
       </SListDiv>
-      {notes.length > minPageSize && (
+      {notes.length > MIN_PAGE_SIZE && (
         <Pagination
           pageSize={pageConfig.pageSize}
           current={pageConfig.current}
