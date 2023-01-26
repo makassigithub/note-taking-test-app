@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as CryptoJS from 'crypto-js';
+const  CryptoJS = require('crypto-js');
 
   /*
   * Encrypt a derived hd private key with a given pin and return it in Base64 form

@@ -1,22 +1,5 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "jest": true
-  },
-  "settings": {
-    "import/resolver": {
-      "typescript": {}
-    }
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
-  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
-  "semi": false,
+  "semi": true,
   "tabWidth": 2,
   "printWidth": 100,
   "singleQuote": true,

@@ -21,7 +21,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint:fix": "eslint --fix src/**/*.{ts,tsx}",
+    "format": "prettier --write src/**/*.{ts,tsx,css} --config ./.prettierrc"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,6 +43,11 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.139",
-    "@types/styled-components": "^4.1.19"
+    "@types/styled-components": "^4.1.19",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "eslint": "^8.32.0",
+    "eslint-plugin-react": "^7.32.1",
+    "prettier": "2.8.3"
   }
 }

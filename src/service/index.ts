@@ -1,4 +1,3 @@
-// @ts-ignore
 import axios from 'axios';
 import { NotesResponse, NoteResponse, NotePostRequest, NotePatchRequest } from '../types';
 class NoteService {
@@ -13,7 +12,7 @@ class NoteService {
   };
 
   postNote = async (body: NotePostRequest) => {
-    const res =  (await this.service.post<NoteResponse>('', body)).data;
+    const res = (await this.service.post<NoteResponse>('', body)).data;
     return res;
   };
 

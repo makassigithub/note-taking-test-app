@@ -1,4 +1,3 @@
-
 export type NotePostRequest = {
   body: string;
   title: string;
