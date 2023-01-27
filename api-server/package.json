@@ -1,6 +1,7 @@
 {
   "name": "note-app-api",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "backend for storing notes",
   "main": "index.js",
   "scripts": {

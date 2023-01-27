@@ -28,7 +28,6 @@ export class InMomoryNoteBD {
     }
     const newNote = { ...note, id: +id };
     this.content[id] = newNote;
-    console.log('note updated', note);
     return newNote;
   };
 
