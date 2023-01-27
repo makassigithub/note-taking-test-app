@@ -1,9 +1,9 @@
 ## Steps to run the app
 
-In the project directory, we have the backend code inside ./backend folder.
+In the project directory, we have the backend code inside ./api-server folder.
 
-1. yarn `yarn && cd ./backend && yarn` from the project root directory to install node_modules
-2. run `yarn serve` from the project root directory or in ./backend directory to start the api.
+1. yarn `yarn && cd ./api-server && yarn` from the project root directory to install node_modules
+2. run `yarn serve` from the project root directory or in ./api-server directory to start the api.
 3. run `yarn start` from the project root directory to start the forntEnd application
 
 ## `side note :`

@@ -1,6 +1,7 @@
 {
   "name": "notes",
   "version": "0.1.0",
+  "license": "MIT",
   "private": false,
   "dependencies": {
     "@types/jest": "24.0.18",
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "serve": "cd ./backend && yarn serve",
+    "serve": "cd ./api-server && yarn serve",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
