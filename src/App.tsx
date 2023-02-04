@@ -2,21 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 import NotesList from './components/NotesList';
 import NotesService from './service';
+import { Note } from './types';
 import NoteModal, { FormValues } from './components/NoteModal';
-import { sortBy, orderBy } from 'lodash';
+import { orderBy, sortBy } from 'lodash';
 import { encryptNote, decryptNote } from './utils';
 import { useAppData } from './appData';
-
 const { PageHeader, Button, Switch, Pagination, Dropdown, Menu } = require('antd');
+
 const EMPTY_NOTE_VALUES: FormValues = { body: '', title: '' };
 const MIN_PAGE_SIZE = 5;
 const SORTABLE_LIST_SIZE = 2;
 
+const initialNoteState = {
+  notes: [],
+};
+
 const App = () => {
   const {
-    isLoading,
-    notes,
-    setNotes,
     addModalIsShowing,
     setAddModalIsShowing,
     editModalNoteId,
@@ -25,7 +27,9 @@ const App = () => {
     setEncryptionKey,
     pageConfig,
     setPageConfig,
-  } = useAppData();
+    state,
+    dispatch,
+  } = useAppData(initialNoteState);
 
   const pageSizeOptions = (
     <Menu>
@@ -59,7 +63,11 @@ const App = () => {
       ...values,
       body: encryptNote(values.body, encryptionKey),
     });
-    setNotes([{ ...newNote, body: decryptNote(newNote.body, encryptionKey) }, ...notes]);
+
+    dispatch({
+      type: 'ADD_NOTE',
+      note: { ...newNote, body: decryptNote(newNote.body, encryptionKey) },
+    });
     setAddModalIsShowing(false);
   };
 
@@ -71,13 +79,10 @@ const App = () => {
         ...values,
         body: encryptNote(values.body, encryptionKey),
       });
-      setNotes(
-        notes.map((note) =>
-          note.id === updatedNote.id
-            ? { ...updatedNote, body: decryptNote(updatedNote.body, encryptionKey) }
-            : note,
-        ),
-      );
+      dispatch({
+        type: 'EDIT_NOTE',
+        editedNote: { ...updatedNote, body: decryptNote(updatedNote.body, encryptionKey) },
+      });
       setEditModalNoteId(null);
     }
   };
@@ -90,36 +95,36 @@ const App = () => {
 
   const handleDeleteNoteClick = async (id: string) => {
     try {
-      await NotesService.deleteNote(id);
-      setNotes((notes) => notes.filter((note) => note.id !== id));
+      const response = await NotesService.deleteNote(id);
+      if (response.status === 204) dispatch({ type: 'DELETE_NOTE', noteId: id });
     } catch (error) {
       console.log('error: ', error);
     }
   };
 
-  const editModalNote = notes.find((note) => note.id === editModalNoteId);
+  const editModalNote = state.notes.find((note: Note) => note.id === editModalNoteId);
 
   const onSortNoteByTitle = (checked: boolean) => {
     const sortedNotes = checked
-      ? sortBy(notes, (note) => note.title.toLowerCase())
-      : orderBy(notes, 'id', 'desc');
+      ? sortBy(state.notes, (note) => note.title.toLowerCase())
+      : orderBy(state.notes, 'id', 'desc');
 
-    setNotes(sortedNotes);
+    dispatch({ type: 'NOTES_LOADED', notes: sortedNotes });
   };
 
   return (
     <SOuterDiv>
       <PageHeader
         title='Notes'
-        subTitle={`(${notes.length})`}
+        subTitle={`(${state.notes.length})`}
         extra={
           <STopPanel>
-            {notes.length > MIN_PAGE_SIZE && (
+            {state.notes.length > MIN_PAGE_SIZE && (
               <SDropdown overlay={pageSizeOptions} placement='bottomCenter'>
                 <Button>Page Size</Button>
               </SDropdown>
             )}
-            {notes.length >= SORTABLE_LIST_SIZE && (
+            {state.notes.length >= SORTABLE_LIST_SIZE && (
               <SSwitch
                 checkedChildren='Sort by creation'
                 unCheckedChildren='Sort by title'
@@ -134,10 +139,10 @@ const App = () => {
       />
       <SListDiv>
         <NotesList
-          notes={notes}
+          notes={state.notes}
           onEditItemClick={handleEditNoteClick}
           onDeleteItemClick={handleDeleteNoteClick}
-          isLoading={isLoading}
+          isLoading={state.isLoading}
           onAddClick={handleAddNoteClick}
           pageConfig={pageConfig}
         />
@@ -158,11 +163,11 @@ const App = () => {
           initialValues={editModalNote ? editModalNote : EMPTY_NOTE_VALUES}
         />
       </SListDiv>
-      {notes.length > MIN_PAGE_SIZE && (
+      {state.notes.length > MIN_PAGE_SIZE && (
         <Pagination
           pageSize={pageConfig.pageSize}
           current={pageConfig.current}
-          total={notes.length}
+          total={state.notes.length}
           onChange={handlePageChange}
           style={{ bottom: '0px', justifyContent: 'center', display: 'flex' }}
         />

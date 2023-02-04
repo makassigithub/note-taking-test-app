@@ -1,14 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { decryptNote } from './utils';
 import NotesService from './service';
 import { Note } from './types';
 
-export const useAppData = () => {
+export function noteReducer(state: any, action: any) {
+  switch (action.type) {
+    case 'LOAD_NOTES':
+      return { ...state, isLoading: true };
+    case 'ADD_NOTE':
+      return { ...state, notes: [action.note, ...state.notes] };
+    case 'DELETE_NOTE':
+      return { ...state, notes: state.notes.filter((item: Note) => item.id !== action.noteId) };
+    case 'EDIT_NOTE':
+      return {
+        ...state,
+        notes: state.notes.map((item: Note) =>
+          item.id === action.editedNote.id ? action.editedNote : item,
+        ),
+      };
+    case 'NOTES_LOADED':
+      return { ...state, isLoading: false, notes: action.notes };
+    default:
+      break;
+  }
+}
+
+export const useAppData = (initialState: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [addModalIsShowing, setAddModalIsShowing] = useState(false);
   const [editModalNoteId, setEditModalNoteId] = useState<string | null>(null);
-  const [notes, setNotes] = useState<Note[]>([]);
   const [encryptionKey, setEncryptionKey] = useState('');
+
+  const [state, dispatch] = useReducer(noteReducer, initialState);
 
   const [pageConfig, setPageConfig] = useState({
     pageSize: 5,
@@ -23,12 +46,17 @@ export const useAppData = () => {
       setIsLoading(true);
       try {
         const encodedNotes = await NotesService.getNotes();
-        setNotes(
-          encodedNotes.map((note) => ({ ...note, body: decryptNote(note.body, encryptionKey) })),
-        );
+        dispatch({
+          type: 'NOTES_LOADED',
+          notes: encodedNotes.map((note) => ({
+            ...note,
+            body: decryptNote(note.body, encryptionKey),
+          })),
+        });
+
         setPageConfig({
           ...pageConfig,
-          totalPage: notes.length / pageConfig.pageSize,
+          totalPage: state.notes.length / pageConfig.pageSize,
           minIndex: 0,
           maxIndex: pageConfig.pageSize,
         });
@@ -41,8 +69,6 @@ export const useAppData = () => {
 
   return {
     isLoading,
-    notes,
-    setNotes,
     addModalIsShowing,
     setAddModalIsShowing,
     editModalNoteId,
@@ -51,5 +77,7 @@ export const useAppData = () => {
     setEncryptionKey,
     pageConfig,
     setPageConfig,
+    state,
+    dispatch,
   };
 };
