@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import NotesList from './components/NotesList';
 import NotesService from './service';
-import { Note } from './types';
 import NoteModal, { FormValues } from './components/NoteModal';
-import { sortBy } from 'lodash';
+import { sortBy, orderBy } from 'lodash';
 import { encryptNote, decryptNote } from './utils';
+import { useAppData } from './appData';
 
 const { PageHeader, Button, Switch, Pagination, Dropdown, Menu } = require('antd');
 const EMPTY_NOTE_VALUES: FormValues = { body: '', title: '' };
@@ -13,30 +13,19 @@ const MIN_PAGE_SIZE = 5;
 const SORTABLE_LIST_SIZE = 2;
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [addModalIsShowing, setAddModalIsShowing] = useState(false);
-  const [editModalNoteId, setEditModalNoteId] = useState<string | null>(null);
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [encryptionKey, setEncryptionKey] = useState('');
-
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      try {
-        const encodedNotes = await NotesService.getNotes();
-        setNotes(
-          encodedNotes.map((note) => ({ ...note, body: decryptNote(note.body, encryptionKey) })),
-        );
-        setPageConfig({
-          ...pageConfig,
-          totalPage: notes.length / pageConfig.pageSize,
-          minIndex: 0,
-          maxIndex: pageConfig.pageSize,
-        });
-        setIsLoading(false);
-      } catch (error) {}
-    })();
-  }, []);
+  const {
+    isLoading,
+    notes,
+    setNotes,
+    addModalIsShowing,
+    setAddModalIsShowing,
+    editModalNoteId,
+    setEditModalNoteId,
+    encryptionKey,
+    setEncryptionKey,
+    pageConfig,
+    setPageConfig,
+  } = useAppData();
 
   const pageSizeOptions = (
     <Menu>
@@ -53,14 +42,6 @@ const App = () => {
       </Menu.Item>
     </Menu>
   );
-
-  const [pageConfig, setPageConfig] = useState({
-    pageSize: 5,
-    totalPage: 0,
-    current: 1,
-    minIndex: 0,
-    maxIndex: 0,
-  });
 
   const handleAddNoteClick = () => setAddModalIsShowing(true);
 
@@ -119,7 +100,11 @@ const App = () => {
   const editModalNote = notes.find((note) => note.id === editModalNoteId);
 
   const onSortNoteByTitle = (checked: boolean) => {
-    setNotes((notes) => sortBy(notes, (note) => (checked ? note.title.toLowerCase() : note.id)));
+    const sortedNotes = checked
+      ? sortBy(notes, (note) => note.title.toLowerCase())
+      : orderBy(notes, 'id', 'desc');
+
+    setNotes(sortedNotes);
   };
 
   return (
